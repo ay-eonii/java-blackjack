@@ -3,51 +3,37 @@ package domain.game;
 import domain.card.DealerCards;
 import domain.card.Deck;
 import domain.card.PlayerCards;
+import domain.card.Players;
 import domain.player.Name;
 import domain.player.Names;
-import domain.score.Outcome;
-import domain.score.Referee;
 import domain.score.ScoreBoard;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class BlackjackGame {
 
     private static final Deck deck = new Deck();
 
-    private final Map<Name, PlayerCards> players;
+    private final Players players;
     private final DealerCards dealer;
 
-    private BlackjackGame(Map<Name, PlayerCards> players, DealerCards dealer) {
+    private BlackjackGame(Players players, DealerCards dealer) {
         this.players = players;
         this.dealer = dealer;
     }
 
     public static BlackjackGame from(Names names) {
-        Map<Name, PlayerCards> players = names.getNames().stream()
-                .collect(Collectors.toMap(
-                        name -> name,
-                        name -> new PlayerCards(deck.drawTwoCards())
-                ));
         DealerCards dealer = new DealerCards(deck.drawTwoCards());
+        Players players = Players.from(names, deck);
         return new BlackjackGame(players, dealer);
     }
 
     public void payout(ScoreBoard scoreBoard) {
-        Referee referee = new Referee(scoreBoard);
-        players.forEach((name, player) -> {
-            Outcome outcome = referee.decideResult(dealer, player);
-            scoreBoard.updatePlayerScore(name, outcome);
-        });
+        players.updateScore(dealer, scoreBoard);
     }
 
     public void drawPlayerCards(Name name) {
-        PlayerCards player = player(name);
-        if (player.canDraw()) {
-            player.receive(deck.draw());
-        }
+        players.drawPlayerCards(name, deck.draw());
     }
 
     public void drawDealerCards() {
@@ -59,16 +45,15 @@ public class BlackjackGame {
     }
 
     public boolean playerCanDraw(Name name) {
-        PlayerCards player = player(name);
-        return player.canDraw();
+        return players.canDraw(name);
     }
 
     public PlayerCards player(Name name) {
-        return players.get(name);
+        return players.playerCards(name);
     }
 
     public Map<Name, PlayerCards> players() {
-        return Collections.unmodifiableMap(players);
+        return players.players();
     }
 
     public DealerCards dealer() {
