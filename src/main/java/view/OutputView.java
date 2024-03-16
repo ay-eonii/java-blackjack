@@ -3,23 +3,18 @@ package view;
 import domain.card.Cards;
 import domain.card.DealerCards;
 import domain.card.PlayerCards;
-import domain.game.BlackjackGame;
 import domain.player.Name;
 import domain.score.Revenue;
-import domain.score.ScoreBoard;
 
 import java.util.List;
 import java.util.Map;
 
 public class OutputView {
 
-    public void printInitialCards(BlackjackGame game) {
-        Map<Name, PlayerCards> players = game.players();
+    public void printInitialCards(Map<Name, PlayerCards> players, String dealerFirstCard) {
         printDrawNotice(players);
 
-        String firstCard = game.dealer().getFirstCard();
-        System.out.print("딜러: " + firstCard);
-
+        System.out.print("딜러: " + dealerFirstCard);
         players.forEach((name, player) -> {
             System.out.println();
             printPlayerCards(name, player);
@@ -43,11 +38,11 @@ public class OutputView {
         return String.join(", ", cards.getCards());
     }
 
-    public void printResults(BlackjackGame game) {
+    public void printResults(DealerCards dealer, Map<Name, PlayerCards> players) {
         System.out.println();
-        printDealerCards(game.dealer());
-        printSumOfCards(game.dealer());
-        game.players().forEach((name, player) -> {
+        printDealerCards(dealer);
+        printSumOfCards(dealer);
+        players.forEach((name, player) -> {
             printPlayerCards(name, player);
             printSumOfCards(player);
         });
@@ -62,19 +57,15 @@ public class OutputView {
         System.out.println(" - 결과: " + cards.bestSum());
     }
 
-    public void printScores(ScoreBoard scoreBoard) {
+    public void printScores(Revenue dealerRevenue, Map<Name, Revenue> playersRevenues) {
         System.out.println();
         System.out.println("## 최종 승패");
+
         System.out.print("딜러: ");
-        printDealerScore(scoreBoard);
-
-        Map<Name, Revenue> playerScore = scoreBoard.getPlayersRevenues();
-        playerScore.forEach((name, revenue) -> System.out.println(name + ": " + revenue.getAmount()));
-    }
-
-    private void printDealerScore(ScoreBoard scoreBoard) {
-        Revenue dealerRevenue = scoreBoard.calculateDealerRevenue();
         System.out.println(dealerRevenue.getAmount());
+        playersRevenues.forEach((name, revenue) ->
+                System.out.println(name + ": " + revenue.getAmount())
+        );
     }
 
     public void printDealerGivenCard() {

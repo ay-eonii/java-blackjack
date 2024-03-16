@@ -24,12 +24,12 @@ public class Casino {
 
         Map<Name, Bet> bets = readBets(names);
         ScoreBoard scoreBoard = new ScoreBoard(bets);
-        outputView.printInitialCards(game);
+        outputView.printInitialCards(game.players(), game.dealerFirstCard());
 
         play(game, names);
         game.payout(scoreBoard);
-        outputView.printResults(game);
-        outputView.printScores(scoreBoard);
+        outputView.printResults(game.dealer(), game.players());
+        outputView.printScores(scoreBoard.calculateDealerRevenue(), scoreBoard.getPlayersRevenues());
     }
 
     private Names readNames() {
