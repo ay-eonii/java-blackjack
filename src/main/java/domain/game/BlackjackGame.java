@@ -5,6 +5,7 @@ import domain.card.Deck;
 import domain.card.PlayerCards;
 import domain.player.Name;
 import domain.player.Names;
+import domain.score.Outcome;
 import domain.score.Referee;
 import domain.score.ScoreBoard;
 
@@ -34,11 +35,12 @@ public class BlackjackGame {
         return new BlackjackGame(players, dealer);
     }
 
-    public ScoreBoard payout(Map<Name, Bet> bets) {
-        ScoreBoard scoreBoard = new ScoreBoard(bets);
+    public void payout(ScoreBoard scoreBoard) {
         Referee referee = new Referee(scoreBoard);
-        referee.decideResult(dealer, players);
-        return scoreBoard;
+        players.forEach((name, player) -> {
+            Outcome outcome = referee.decideResult(dealer, player);
+            scoreBoard.updatePlayerScore(name, outcome);
+        });
     }
 
     public void drawPlayerCards(Name name) {
@@ -71,5 +73,9 @@ public class BlackjackGame {
 
     public DealerCards dealer() {
         return dealer;
+    }
+
+    public String dealerFirstCard() {
+        return dealer.getFirstCard();
     }
 }

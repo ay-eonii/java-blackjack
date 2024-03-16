@@ -3,9 +3,6 @@ package domain.score;
 import domain.card.Cards;
 import domain.card.DealerCards;
 import domain.card.PlayerCards;
-import domain.player.Name;
-
-import java.util.Map;
 
 import static domain.score.Outcome.*;
 
@@ -19,11 +16,8 @@ public class Referee {
         this.scoreBoard = scoreBoard;
     }
 
-    public void decideResult(DealerCards dealer, Map<Name, PlayerCards> players) {
-        players.forEach((name, player) -> {
-            Outcome outcome = judgeOutcome(dealer, player);
-            scoreBoard.updatePlayerScore(name, outcome);
-        });
+    public Outcome decideResult(DealerCards dealer, PlayerCards player) {
+        return judgeOutcome(dealer, player);
     }
 
     private Outcome judgeOutcome(DealerCards dealer, PlayerCards player) {

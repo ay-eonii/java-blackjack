@@ -1,13 +1,11 @@
-package domain.game;
+package domain.score;
 
 import domain.card.Card;
 import domain.card.DealerCards;
 import domain.card.PlayerCards;
 import domain.card.Shape;
+import domain.game.Bet;
 import domain.player.Name;
-import domain.score.Referee;
-import domain.score.Revenue;
-import domain.score.ScoreBoard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,80 +34,74 @@ class RefereeTest {
         private final Referee referee = new Referee(scoreBoard);
 
         @Test
-        @DisplayName("플레이어만 블랙잭이면 플레이어의 수익은 베팅금액의 1.5배이다")
-        void decideResult_PlayerBlackjack_OneAndHalfTimes() {
+        @DisplayName("플레이어만 블랙잭이면 블랙잭이다.")
+        void decideResult_PlayerBlackjack_Blackjack() {
             playerCards = new PlayerCards(List.of(
                     new Card(1, Shape.HEART),
                     new Card(10, Shape.DIAMONDS)
             ));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(30000));
+            assertThat(outcome).isEqualTo(Outcome.BLACKJACK);
         }
 
         @Test
-        @DisplayName("플레이어 카드의 합이 딜러 카드의 합보다 크다면 수익은 베팅금액이다.")
-        void decideResult_PlayerWin_PlusBet() {
+        @DisplayName("플레이어 카드의 합이 딜러 카드의 합보다 크다면 승리다.")
+        void decideResult_HigherThanDealer_Win() {
             playerCards = new PlayerCards(List.of(
                     new Card(10, Shape.HEART),
                     new Card(10, Shape.DIAMONDS)
             ));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(20000));
+            assertThat(outcome).isEqualTo(Outcome.WIN);
         }
 
         @Test
-        @DisplayName("플레이어 카드 합과 딜러 카드 합이 같다면 수익은 0이다.")
-        void decideResult_Tie_Zero() {
+        @DisplayName("플레이어 카드 합과 딜러 카드 합이 같다면 무승부다.")
+        void decideResult_SameDealer_Tie() {
             playerCards = new PlayerCards(List.of(
                     new Card(9, Shape.HEART),
                     new Card(10, Shape.DIAMONDS)
             ));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(0));
+            assertThat(outcome).isEqualTo(Outcome.TIE);
         }
 
         @Test
-        @DisplayName("플레이어 카드 합이 딜러 카드 합보다 작다면 베팅금액을 잃는다.")
-        void decideResult_PlayerLose_MinusBet() {
+        @DisplayName("플레이어 카드 합이 딜러 카드 합보다 작다면 진다.")
+        void decideResult_LessThanDealer_Lose() {
             playerCards = new PlayerCards(List.of(
                     new Card(8, Shape.HEART),
                     new Card(10, Shape.DIAMONDS)
             ));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(-20000));
+            assertThat(outcome).isEqualTo(Outcome.LOSE);
         }
-
 
         @Test
         @DisplayName("플레이어 카드 합이 21을 초과하면 플레이어는 베팅금액을 잃는다.")
-        void decideResult_PlayerBust_MinusBet() {
+        void decideResult_Bust_Lose() {
             playerCards = new PlayerCards(List.of(
                     new Card(8, Shape.HEART),
                     new Card(10, Shape.DIAMONDS)
             ));
             playerCards.receive(new Card(4, Shape.CLUB));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(-20000));
+            assertThat(outcome).isEqualTo(Outcome.LOSE);
         }
 
         @Test
         @DisplayName("플레이어가 블랙잭이면서 21을 초과한 경우는 베팅금액을 잃는다.")
-        void decideResult_BlackjackAndBust_MinusBet() {
+        void decideResult_BlackjackAndBust_Lose() {
             PlayerCards playerCards = new PlayerCards(List.of(
                     new Card(1, Shape.HEART),
                     new Card(10, Shape.CLUB)
@@ -117,10 +109,9 @@ class RefereeTest {
             playerCards.receive(new Card(5, Shape.SPADE));
             playerCards.receive(new Card(6, Shape.SPADE));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(-20000));
+            assertThat(outcome).isEqualTo(Outcome.LOSE);
         }
     }
 
@@ -134,32 +125,30 @@ class RefereeTest {
         private final Referee referee = new Referee(scoreBoard);
 
         @Test
-        @DisplayName("딜러와 플레이어가 모두 블랙잭이라면 수익은 0이다.")
-        void decideResult_BothBlackJack_Zero() {
+        @DisplayName("딜러와 플레이어가 모두 블랙잭이라면 무승부다.")
+        void decideResult_BothBlackJack_Tie() {
             playerCards = new PlayerCards(List.of(
                     new Card(1, Shape.HEART),
                     new Card(10, Shape.DIAMONDS)
             ));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(0));
+            assertThat(outcome).isEqualTo(Outcome.TIE);
         }
 
         @Test
-        @DisplayName("플레이어 카드 합이 딜러와 같으면 수익은 0이다.")
-        void decideResult_SameDealer_Zero() {
+        @DisplayName("플레이어 카드 합이 딜러와 같으면 무승부다.")
+        void decideResult_SameDealer_Tie() {
             PlayerCards playerCards = new PlayerCards(List.of(
                     new Card(9, Shape.HEART),
                     new Card(10, Shape.CLUB)
             ));
             playerCards.receive(new Card(2, Shape.SPADE));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(0));
+            assertThat(outcome).isEqualTo(Outcome.TIE);
         }
     }
 
@@ -179,32 +168,30 @@ class RefereeTest {
         }
 
         @Test
-        @DisplayName("플레이어 카드 합이 21을 초과하지 않으면 수익은 베팅금액이다.")
-        void decideResult_LessThan21_PlusBet() {
+        @DisplayName("플레이어 카드 합이 21을 초과하지 않으면 승리다.")
+        void decideResult_LessThan21_Win() {
             PlayerCards playerCards = new PlayerCards(List.of(
                     new Card(9, Shape.HEART),
                     new Card(10, Shape.CLUB)
             ));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(20000));
+            assertThat(outcome).isEqualTo(Outcome.WIN);
         }
 
         @Test
         @DisplayName("플레이어 카드 합이 21을 초과하면 베팅금액을 잃는다.")
-        void decideResult_Over21_MinusBet() {
+        void decideResult_Bust_Lose() {
             PlayerCards playerCards = new PlayerCards(List.of(
                     new Card(9, Shape.HEART),
                     new Card(10, Shape.CLUB)
             ));
             playerCards.receive(new Card(3, Shape.SPADE));
 
-            referee.decideResult(dealerCards, Map.of(capy, playerCards));
+            Outcome outcome = referee.decideResult(dealerCards, playerCards);
 
-            Revenue capyRevenue = scoreBoard.getPlayersRevenues().get(capy);
-            assertThat(capyRevenue).isEqualTo(new Revenue(-20000));
+            assertThat(outcome).isEqualTo(Outcome.LOSE);
         }
     }
 }

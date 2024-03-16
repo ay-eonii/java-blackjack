@@ -20,12 +20,14 @@ public class Casino {
 
     public void run() {
         Names names = readNames();
-        Map<Name, Bet> bets = readBets(names);
         BlackjackGame game = BlackjackGame.from(names);
+
+        Map<Name, Bet> bets = readBets(names);
+        ScoreBoard scoreBoard = new ScoreBoard(bets);
         outputView.printInitialCards(game);
 
         play(game, names);
-        ScoreBoard scoreBoard = game.payout(bets);
+        game.payout(scoreBoard);
         outputView.printResults(game);
         outputView.printScores(scoreBoard);
     }
