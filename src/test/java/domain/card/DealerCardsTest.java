@@ -1,5 +1,8 @@
 package domain.card;
 
+import domain.player.card.Card;
+import domain.player.card.DealerCards;
+import domain.player.card.Shape;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +55,6 @@ class DealerCardsTest {
 
         dealerCards.receive(new Card(1, Shape.CLUB));
 
-        assertThat(dealerCards.cards).hasSize(3);
+        assertThat(dealerCards.getCards()).hasSize(3);
     }
 }

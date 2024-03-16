@@ -1,4 +1,4 @@
-package domain.card;
+package domain.player.card;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,9 +1,9 @@
 package view;
 
-import domain.card.Cards;
-import domain.card.DealerCards;
-import domain.card.PlayerCards;
 import domain.player.Name;
+import domain.player.card.Cards;
+import domain.player.card.DealerCards;
+import domain.player.card.PlayerCards;
 import domain.score.Revenue;
 
 import java.util.List;

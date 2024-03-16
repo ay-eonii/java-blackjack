@@ -1,11 +1,11 @@
 package domain.game;
 
-import domain.card.DealerCards;
-import domain.card.Deck;
-import domain.card.PlayerCards;
-import domain.card.Players;
 import domain.player.Name;
 import domain.player.Names;
+import domain.player.Players;
+import domain.player.card.DealerCards;
+import domain.player.card.Deck;
+import domain.player.card.PlayerCards;
 import domain.score.ScoreBoard;
 
 import java.util.Map;

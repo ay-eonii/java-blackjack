@@ -1,4 +1,4 @@
-package domain.card;
+package domain.player.card;
 
 public enum Shape {
 

@@ -1,4 +1,4 @@
-package domain.game;
+package domain.score;
 
 import java.util.Objects;
 

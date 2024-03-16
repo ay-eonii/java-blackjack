@@ -1,27 +1,22 @@
 package domain.score;
 
-import domain.card.Card;
-import domain.card.DealerCards;
-import domain.card.PlayerCards;
-import domain.card.Shape;
-import domain.game.Bet;
-import domain.player.Name;
+import domain.player.card.Card;
+import domain.player.card.DealerCards;
+import domain.player.card.PlayerCards;
+import domain.player.card.Shape;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Nested
 class RefereeTest {
 
-    private final Name capy = new Name("capy");
     private PlayerCards playerCards;
-    private ScoreBoard scoreBoard = new ScoreBoard(Map.of(capy, new Bet(20000)));
 
     @Nested
     @DisplayName("딜러가 블랙잭이 아니다.")
@@ -31,7 +26,7 @@ class RefereeTest {
                 new Card(9, Shape.CLUB),
                 new Card(10, Shape.SPADE)
         ));
-        private final Referee referee = new Referee(scoreBoard);
+        private final Referee referee = new Referee();
 
         @Test
         @DisplayName("플레이어만 블랙잭이면 블랙잭이다.")
@@ -122,7 +117,7 @@ class RefereeTest {
                 new Card(1, Shape.CLUB),
                 new Card(10, Shape.SPADE)
         ));
-        private final Referee referee = new Referee(scoreBoard);
+        private final Referee referee = new Referee();
 
         @Test
         @DisplayName("딜러와 플레이어가 모두 블랙잭이라면 무승부다.")
@@ -160,7 +155,7 @@ class RefereeTest {
                 new Card(9, Shape.HEART),
                 new Card(10, Shape.CLUB)
         ));
-        private final Referee referee = new Referee(scoreBoard);
+        private final Referee referee = new Referee();
 
         @BeforeEach
         void setUp() {

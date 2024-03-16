@@ -1,6 +1,5 @@
 package domain.score;
 
-import domain.game.Bet;
 import domain.player.Name;
 
 import java.util.*;

@@ -1,7 +1,9 @@
-package domain.card;
+package domain.player;
 
-import domain.player.Name;
-import domain.player.Names;
+import domain.player.card.Card;
+import domain.player.card.DealerCards;
+import domain.player.card.Deck;
+import domain.player.card.PlayerCards;
 import domain.score.Outcome;
 import domain.score.Referee;
 import domain.score.ScoreBoard;
@@ -28,7 +30,7 @@ public class Players {
     }
 
     public void updateScore(DealerCards dealer, ScoreBoard scoreBoard) {
-        Referee referee = new Referee(scoreBoard);
+        Referee referee = new Referee();
         players.forEach((name, player) -> {
             Outcome outcome = referee.decideResult(dealer, player);
             scoreBoard.updatePlayerScore(name, outcome);

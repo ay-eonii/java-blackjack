@@ -1,7 +1,5 @@
 package domain.score;
 
-import domain.game.Bet;
-
 import java.util.function.Function;
 
 public enum RevenueCalculator {

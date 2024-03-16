@@ -1,20 +1,14 @@
 package domain.score;
 
-import domain.card.Cards;
-import domain.card.DealerCards;
-import domain.card.PlayerCards;
+import domain.player.card.Cards;
+import domain.player.card.DealerCards;
+import domain.player.card.PlayerCards;
 
 import static domain.score.Outcome.*;
 
 public class Referee {
 
     private static final int STANDARD = 21;
-
-    private final ScoreBoard scoreBoard;
-
-    public Referee(ScoreBoard scoreBoard) {
-        this.scoreBoard = scoreBoard;
-    }
 
     public Outcome decideResult(DealerCards dealer, PlayerCards player) {
         return judgeOutcome(dealer, player);

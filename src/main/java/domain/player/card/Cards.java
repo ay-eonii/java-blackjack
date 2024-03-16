@@ -1,4 +1,4 @@
-package domain.card;
+package domain.player.card;
 
 import java.util.LinkedList;
 import java.util.List;

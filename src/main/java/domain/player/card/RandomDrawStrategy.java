@@ -1,9 +1,9 @@
-package domain.card;
+package domain.player.card;
 
 import java.util.Random;
 
 public class RandomDrawStrategy {
-    
+
     private final Random random = new Random();
 
     public int generateNumber(int size) {
