@@ -15,19 +15,22 @@ import java.util.Map;
 
 public class Casino {
 
-    private final OutputView outputView = new OutputView();
     private final InputView inputView = new InputView();
+    private final OutputView outputView = new OutputView();
 
-    public void run() {
+    public BlackjackGame prepare() {
         Names names = readNames();
         Map<Name, Bet> bets = readBets(names);
+        return BlackjackGame.from(names, bets);
+    }
 
-        BlackjackGame game = BlackjackGame.from(names, bets);
+    public void start(BlackjackGame game) {
         ScoreBoard scoreBoard = new ScoreBoard();
         outputView.printInitialCards(game.players(), game.dealerFirstCard());
 
-        play(game, names);
+        play(game);
         game.payout(scoreBoard);
+
         outputView.printResults(game.dealer(), game.players());
         outputView.printScores(scoreBoard.calculateDealerRevenue(), scoreBoard.getPlayersRevenues());
     }
@@ -64,8 +67,8 @@ public class Casino {
         }
     }
 
-    private void play(BlackjackGame game, Names names) {
-        for (Name name : names.getNames()) {
+    private void play(BlackjackGame game) {
+        for (Name name : game.playersNames()) {
             drawByOpinion(game, name);
         }
         while (game.dealerCanDraw()) {
