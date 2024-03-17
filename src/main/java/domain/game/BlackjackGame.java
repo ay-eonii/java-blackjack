@@ -10,6 +10,7 @@ import domain.score.Bet;
 import domain.score.ScoreBoard;
 
 import java.util.Map;
+import java.util.Set;
 
 public class BlackjackGame {
 
@@ -63,5 +64,9 @@ public class BlackjackGame {
 
     public String dealerFirstCard() {
         return dealer.getFirstCard();
+    }
+
+    public Set<Name> playersNames() {
+        return players.names();
     }
 }

@@ -11,6 +11,7 @@ import domain.score.ScoreBoard;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Players {
@@ -58,5 +59,9 @@ public class Players {
 
     public Map<Name, PlayerCards> players() {
         return Collections.unmodifiableMap(players);
+    }
+
+    public Set<Name> names() {
+        return players.keySet();
     }
 }
