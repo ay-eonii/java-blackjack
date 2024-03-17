@@ -6,6 +6,7 @@ import domain.player.Players;
 import domain.player.card.DealerCards;
 import domain.player.card.Deck;
 import domain.player.card.PlayerCards;
+import domain.score.Bet;
 import domain.score.ScoreBoard;
 
 import java.util.Map;
@@ -22,9 +23,9 @@ public class BlackjackGame {
         this.dealer = dealer;
     }
 
-    public static BlackjackGame from(Names names) {
+    public static BlackjackGame from(Names names, Map<Name, Bet> bets) {
         DealerCards dealer = new DealerCards(deck.drawTwoCards());
-        Players players = Players.from(names, deck);
+        Players players = Players.from(names, bets, deck);
         return new BlackjackGame(players, dealer);
     }
 

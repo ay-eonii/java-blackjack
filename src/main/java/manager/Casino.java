@@ -20,10 +20,10 @@ public class Casino {
 
     public void run() {
         Names names = readNames();
-        BlackjackGame game = BlackjackGame.from(names);
-
         Map<Name, Bet> bets = readBets(names);
-        ScoreBoard scoreBoard = new ScoreBoard(bets);
+
+        BlackjackGame game = BlackjackGame.from(names, bets);
+        ScoreBoard scoreBoard = new ScoreBoard();
         outputView.printInitialCards(game.players(), game.dealerFirstCard());
 
         play(game, names);

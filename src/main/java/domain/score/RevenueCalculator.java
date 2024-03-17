@@ -1,21 +1,28 @@
 package domain.score;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 public enum RevenueCalculator {
 
-    EARN(1),
-    LOSE(-1),
-    RETURN(0),
-    BLACKJACK_EARN(1.5);
+    EARN(Outcome.WIN, 1),
+    LOSE(Outcome.LOSE, -1),
+    RETURN(Outcome.TIE, 0),
+    BLACKJACK_EARN(Outcome.BLACKJACK, 1.5);
 
-    private final Function<Bet, Integer> calculate;
+    private final Outcome outcome;
+    private final Function<Bet, Revenue> calculate;
 
-    RevenueCalculator(double ratio) {
-        this.calculate = bet -> (int) (bet.getAmount() * ratio);
+    RevenueCalculator(Outcome outcome, double ratio) {
+        this.outcome = outcome;
+        this.calculate = bet -> new Revenue((int) (bet.getAmount() * ratio));
     }
 
-    public Revenue calculate(Bet bet) {
-        return new Revenue(calculate.apply(bet));
+    public static Revenue calculate(Outcome outcome, Bet bet) {
+        return Arrays.stream(values())
+                .filter(calculator -> calculator.outcome == outcome)
+                .findFirst()
+                .map(calculator -> calculator.calculate.apply(bet))
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 결과입니다."));
     }
 }

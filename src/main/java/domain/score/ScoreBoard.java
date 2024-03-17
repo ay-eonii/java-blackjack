@@ -6,20 +6,7 @@ import java.util.*;
 
 public class ScoreBoard {
 
-    private final Map<Name, Bet> playersBets;
-    private final Map<Name, Revenue> playersRevenues;
-
-    public ScoreBoard(Map<Name, Bet> playersBets) {
-        this.playersBets = playersBets;
-        this.playersRevenues = new HashMap<>();
-    }
-
-    public void updatePlayerScore(Name name, Outcome outcome) {
-        Bet bet = playersBets.get(name);
-        RevenueCalculator revenueCalculator = outcome.getRevenueCalculator();
-        Revenue revenue = revenueCalculator.calculate(bet);
-        playersRevenues.put(name, revenue);
-    }
+    private final Map<Name, Revenue> playersRevenues = new HashMap<>();
 
     public Revenue calculateDealerRevenue() {
         List<Revenue> revenues = new ArrayList<>(playersRevenues.values());
@@ -31,5 +18,10 @@ public class ScoreBoard {
 
     public Map<Name, Revenue> getPlayersRevenues() {
         return Collections.unmodifiableMap(playersRevenues);
+    }
+
+    public void updatePlayerScore(Name name, Bet bet, Outcome outcome) {
+        Revenue revenue = RevenueCalculator.calculate(outcome, bet);
+        playersRevenues.put(name, revenue);
     }
 }

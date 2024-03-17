@@ -4,6 +4,7 @@ import domain.player.card.Card;
 import domain.player.card.DealerCards;
 import domain.player.card.Deck;
 import domain.player.card.PlayerCards;
+import domain.score.Bet;
 import domain.score.Outcome;
 import domain.score.Referee;
 import domain.score.ScoreBoard;
@@ -15,25 +16,27 @@ import java.util.stream.Collectors;
 public class Players {
 
     private final Map<Name, PlayerCards> players;
+    private final Map<Name, Bet> bets;
 
-    private Players(Map<Name, PlayerCards> players) {
+    private Players(Map<Name, PlayerCards> players, Map<Name, Bet> bets) {
         this.players = players;
+        this.bets = bets;
     }
 
-    public static Players from(Names names, Deck deck) {
+    public static Players from(Names names, Map<Name, Bet> bets, Deck deck) {
         Map<Name, PlayerCards> players = names.getNames().stream()
                 .collect(Collectors.toMap(
                         name -> name,
                         name -> new PlayerCards(deck.drawTwoCards())
                 ));
-        return new Players(players);
+        return new Players(players, bets);
     }
 
     public void updateScore(DealerCards dealer, ScoreBoard scoreBoard) {
         Referee referee = new Referee();
         players.forEach((name, player) -> {
             Outcome outcome = referee.decideResult(dealer, player);
-            scoreBoard.updatePlayerScore(name, outcome);
+            scoreBoard.updatePlayerScore(name, bets.get(name), outcome);
         });
     }
 
